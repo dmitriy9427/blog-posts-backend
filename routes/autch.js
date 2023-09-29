@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { register, login, userme } from "../controllers/autch.js";
-
+import { checkAutch } from "../utils/checkAutch.js";
 const autchrouter = new Router();
 
 // Register
@@ -11,6 +11,6 @@ autchrouter.post("/register", register);
 autchrouter.post("/login", login);
 
 // user me
-autchrouter.post("/me", userme);
+autchrouter.post("/me", checkAutch, userme);
 
 export default autchrouter;

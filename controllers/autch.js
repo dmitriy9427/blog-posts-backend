@@ -3,9 +3,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 // Register
-export const register = async (reg, res) => {
+export const register = async (req, res) => {
   try {
-    const { username, password } = reg.body;
+    const { username, password } = req.body;
 
     const isUserRegister = await User.findOne({ username });
 
@@ -73,8 +73,33 @@ export const login = async (req, res) => {
   }
 };
 
-// User me
-export const userme = async (reg, res) => {
+// Получение пользователя чтобы после перезагрузки страницы не логиниться заново
+export const userme = async (req, res) => {
   try {
-  } catch (error) {}
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.json({
+        message: "Такого пользователя не существует.",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "30d" }
+    );
+
+    res.json({
+      user,
+      token,
+    });
+  } catch (error) {
+    return res.json({
+      message: "Ошибка доступа.",
+    });
+  }
 };
