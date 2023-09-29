@@ -1,13 +1,16 @@
 import { Router } from "express";
-import {} from "../controllers/autch.js";
+import { register, login, userme } from "../controllers/autch.js";
 
-const router = new Router();
+const autchrouter = new Router();
 
 // Register
-router.post("/register", register);
+//http://localhost:3005/api/autch/register
+autchrouter.post("/register", register);
 
 // Login
-router.post("/login", login);
+autchrouter.post("/login", login);
 
 // user me
-router.post("/register", userme);
+autchrouter.post("/me", userme);
+
+export default autchrouter;

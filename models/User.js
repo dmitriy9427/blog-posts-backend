@@ -14,7 +14,7 @@ const userModel = new Schema(
     },
     posts: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Post",
       },
     ],
