@@ -1,5 +1,6 @@
 import User from "../models/User.js";
-import bcrypt, { hash } from "bcryptjs";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 // Register
 export const register = async (reg, res) => {
@@ -36,26 +37,38 @@ export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const isUser = await User.findOne({ username });
+    const user = await User.findOne({ username });
 
-    if (!isUser) {
+    if (!user) {
       return res.json({
         message: "Пользователя с таким именем не существует.",
       });
     }
 
-    const passwordHash = await bcrypt.compare(password, isUser.password);
+    const passwordHash = await bcrypt.compare(password, user.password);
 
-    if(!passwordHash){
-        return res.json({
-            message: "Пароль не верный."
-        })
+    if (!passwordHash) {
+      return res.json({
+        message: "Пароль не верный.",
+      });
     }
 
-    const token = 
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "30d" }
+    );
+    res.json({
+      token,
+      user,
+      message: "Вы успешно вошли в систему.",
+    });
   } catch (error) {
     return res.json({
-      message: "Ошибка при регистрации пользователя. Попробуйте зайти позднее",
+      message: "Ошибка входа. Попробуйте зайти позднее",
     });
   }
 };
