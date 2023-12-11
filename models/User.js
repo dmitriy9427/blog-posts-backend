@@ -1,27 +1,28 @@
 import mongoose from "mongoose";
-const Schema = mongoose.Schema;
 
-const userModel = new Schema(
+const userModel = new mongoose.Schema(
   {
     username: {
       type: String,
       required: true,
+      unique: false,
     },
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    password: {
+    passwordHash: {
       type: String,
       required: true,
     },
     posts: [
       {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
       },
     ],
+    avatarUrl: String,
   },
   { timestamps: true }
 );

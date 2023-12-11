@@ -4,13 +4,13 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors"; //что можно было делать запросы с разных api-адресов
-import autchrouter from "./routes/autch.js";
+import autchrouter from "./routes/routes.js";
 
 const app = express();
 
 dotenv.config();
 // cosntants
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 8889;
 const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;

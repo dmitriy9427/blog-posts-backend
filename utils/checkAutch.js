@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 
 export function checkAutch(req, res, next) {
-  const token = (req.headers.autorization || "").replace(/Bearer\s?/, "");
+  const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
+
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
@@ -10,9 +11,13 @@ export function checkAutch(req, res, next) {
 
       next();
     } catch (error) {
-      res.json({
+      return res.status(403).json({
         message: "Нет доступа.",
       });
     }
+  } else {
+    return res.status(403).json({
+      message: "Нет доступа",
+    });
   }
 }
