@@ -1,10 +1,11 @@
 //mongodb+srv://test:<password>@cluster0.oymhy5g.mongodb.net/
-//mongodb+srv://test:test123@cluster0.oymhy5g.mongodb.net/
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors"; //что можно было делать запросы с разных api-адресов
+import multer from "multer";
 import autchrouter from "./routes/routes.js";
+import { checkAutch } from "./utils/checkAutch.js";
 
 const app = express();
 
@@ -20,10 +21,34 @@ app.use(express.json()); // для отображения в формате json
 app.use(cors()); //таким образом мы сможем отправлять на backend с разных api-адресов
 app.use("/api/autch", autchrouter);
 
+const storage = multer.diskStorage({
+  destination: (_, __, callack) => {
+    callack(null, "uploads");
+  },
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+app.post(
+  "/api/autch/uploads",
+  checkAutch,
+  upload.single("image"),
+  (req, res) => {
+    res.json({
+      url: `/uploads/${req.file.originalname}`,
+    });
+  }
+);
+
+app.use("/api/autch/uploads", express.static("uploads"));
+
 async function connect() {
   try {
     await mongoose.connect(
-      `mongodb+srv://test:test123@cluster0.oymhy5g.mongodb.net/posts`
+      `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.oymhy5g.mongodb.net/${DB_NAME}`
     );
     app.listen(PORT, () => {
       console.log(`Server OK ${PORT}`);

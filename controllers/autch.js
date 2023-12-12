@@ -1,4 +1,3 @@
-import { validationResult } from "express-validator";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -6,10 +5,6 @@ import jwt from "jsonwebtoken";
 // Register
 export const register = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json(errors.array());
-    }
     const password = req.body.passwordHash;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
@@ -47,7 +42,7 @@ export const register = async (req, res) => {
 // Login
 export const login = async (req, res) => {
   try {
-    const user = await User.findOne(req.body.email);
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
       return res.status(404).json({
         message: "Пользователя не существует.",
