@@ -16,7 +16,7 @@ const PostModel = new mongoose.Schema({
     ref: "User",
   },
   tags: {
-    type: String,
+    type: Array,
     default: [],
   },
   viewsCount: {

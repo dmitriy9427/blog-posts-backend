@@ -6,7 +6,15 @@ import {
 } from "../validations/validations.js";
 import { register, login, userme } from "../controllers/autch.js";
 import { checkAutch } from "../utils/checkAutch.js";
-import { create, getAll, getOne, remove, update } from "../controllers/post.js";
+import {
+  create,
+  getAll,
+  getOne,
+  remove,
+  update,
+  getTagOne,
+  getTags,
+} from "../controllers/post.js";
 import handleValidationErrors from "../utils/handleValidationErrors.js";
 const autchrouter = new Router();
 
@@ -33,5 +41,8 @@ autchrouter.post(
 );
 autchrouter.delete("/posts/:id", checkAutch, remove);
 autchrouter.patch("/posts/:id", checkAutch, handleValidationErrors, update);
+
+autchrouter.get("/tags", getTags);
+autchrouter.get("/tags/:tag", getTagOne);
 
 export default autchrouter;

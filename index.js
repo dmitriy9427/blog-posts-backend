@@ -19,7 +19,7 @@ const DB_PASSWORD = process.env.DB_PASSWORD;
 // middleware дополняют или расширяют базовые настройки express
 app.use(express.json()); // для отображения в формате json
 app.use(cors()); //таким образом мы сможем отправлять на backend с разных api-адресов
-app.use("/api/autch", autchrouter);
+app.use("/api/", autchrouter);
 
 const storage = multer.diskStorage({
   destination: (_, __, callack) => {
@@ -32,18 +32,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.post(
-  "/api/autch/uploads",
-  checkAutch,
-  upload.single("image"),
-  (req, res) => {
-    res.json({
-      url: `/uploads/${req.file.originalname}`,
-    });
-  }
-);
+app.post("/api/uploads", checkAutch, upload.single("image"), (req, res) => {
+  res.json({
+    url: `/api/uploads/${req.file.originalname}`,
+  });
+});
 
-app.use("/api/autch/uploads", express.static("uploads"));
+app.use("/api/uploads", express.static("uploads"));
 
 async function connect() {
   try {

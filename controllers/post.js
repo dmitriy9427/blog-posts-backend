@@ -15,7 +15,7 @@ export const getAll = async (req, res) => {
 export const getOne = async (req, res) => {
   const postId = req.params.id;
 
-  PostModel.findOneAndUpdate(
+  await PostModel.findOneAndUpdate(
     {
       _id: postId,
     },
@@ -28,7 +28,7 @@ export const getOne = async (req, res) => {
   )
     .populate("user")
     .then((update) => {
-      return res.json(update);
+      res.json(update);
     })
 
     .catch((err) => {
@@ -41,11 +41,11 @@ export const getOne = async (req, res) => {
 
 export const remove = async (req, res) => {
   const postId = req.params.id;
-  PostModel.findByIdAndDelete({
+  await PostModel.findByIdAndDelete({
     _id: postId,
   })
     .populate("user")
-    .then((res) => {
+    .then(() => {
       res.json({
         message: "Статья успешно удалена.",
       });
@@ -102,6 +102,43 @@ export const create = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       message: "Не удалось создать статью.",
+    });
+  }
+};
+
+export const getTags = async (req, res) => {
+  try {
+    const posts = await PostModel.find().limit(4).exec();
+
+    const tags = posts
+      .map((obj) => obj.tags)
+      .flat()
+      .slice(0, 5);
+
+    res.json(tags);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Не удалось получить тэги.",
+    });
+  }
+};
+
+export const getTagOne = async (req, res) => {
+  try {
+    const tag = req.params.tag;
+    const posts = await PostModel.findOne(tag);
+
+    const tags = posts
+      .map((obj) => obj.tags)
+      .flat()
+      .slice(0, 5);
+
+    res.json(tags);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Не удалось получить тэги.",
     });
   }
 };
