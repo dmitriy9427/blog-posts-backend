@@ -42,9 +42,7 @@ app.use("/api/uploads", express.static("uploads"));
 
 async function connect() {
   try {
-    await mongoose.connect(
-      `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.oymhy5g.mongodb.net/${DB_NAME}`
-    );
+    await mongoose.connect(process.env.MONGO_DB_URL);
     app.listen(PORT, () => {
       console.log(`Server OK ${PORT}`);
     });
